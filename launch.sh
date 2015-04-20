@@ -15,8 +15,17 @@ TEMPLATE_DIR=/jaguarjs-jsdoc
 INPUT_DIR=/remote-app
 OUTPUT_DIR=/doc-output
 
-# Clone the repo
-git clone $GIT_REMOTE $INPUT_DIR
+# If the directory exists, make sure we reset it
+if [ -d "$INPUT_DIR" ] && [ -d "$INPUT_DIR/.git" ]; then
+  (
+    cd $INPUT_DIR
+    git reset --hard
+    git pull $GIT_REMOTE
+  )
+else
+  # Clone the repo
+  git clone $GIT_REMOTE $INPUT_DIR
+fi
 
 (
   cd /jsio-preprocess
