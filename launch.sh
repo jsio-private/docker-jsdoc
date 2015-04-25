@@ -5,6 +5,10 @@ if [ -z "$GIT_REMOTE" ]; then
   echo "GIT_REMOTE is unset"
   exit 1
 fi
+if [ -z "$GIT_REF" ]; then
+  echo "GIT_REF is unset"
+  exit 1
+fi
 
 if [ -z "$CONFIG_FILE" ]; then
   CONFIG_FILE=conf.json
@@ -20,13 +24,20 @@ if [ -d "$INPUT_DIR" ] && [ -d "$INPUT_DIR/.git" ]; then
   (
     cd $INPUT_DIR
     git reset --hard
-    git pull $GIT_REMOTE
+    git pull --all $GIT_REMOTE
   )
 else
   # Clone the repo
   git clone $GIT_REMOTE $INPUT_DIR
 fi
 
+# Checkout the proper ref
+(
+  cd $INPUT_DIR
+  git checkout $GIT_REF
+)
+
+# Time to run the docs
 (
   cd /jsio-preprocess
 
