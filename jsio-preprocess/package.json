@@ -5,7 +5,7 @@
     "gulp-jsdoc": "^0.1.4",
     "gulp-util": "^3.0.4",
     "gulp-watch": "^4.2.4",
-    "jaguarjs-jsdoc": "0.0.1",
+    "jaguarjs-jsdoc": "git://github.com/gameclosure/jaguarjs-jsdoc.git",
     "optimist": "^0.6.1",
     "walk": "^2.3.9"
   }
