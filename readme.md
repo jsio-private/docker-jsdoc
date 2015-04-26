@@ -10,6 +10,8 @@ Exmaple usage:
 
 ### Local Testing
 
-Run `./test-container.sh`
+Run `./test-container.sh` to test the container which has been built on your system already.
+
+Run `./test-container.sh dev` to test the container with `launch` and `gulpfile` mounted in.
 
 Note: You must have an ssh key at `~/.ssh/id_rsa`

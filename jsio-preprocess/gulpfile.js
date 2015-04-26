@@ -7,8 +7,8 @@ var watch = require('gulp-watch')
 
 var argv = require('optimist').argv;
 
-var TEMPLATE_PATH = argv.t || 'node_modules/jaguarjs-jsdoc';
-var OUTPUT_PATH = argv.d || './jsdoc_output';
+var TEMPLATE_PATH = argv.t ? argv.t : path.join('node_modules', 'jaguarjs-jsdoc');
+var OUTPUT_PATH = argv.d ? argv.d : './jsdoc_output';
 
 var preprocessSource = function() {
   // you're going to receive Vinyl files as chunks
@@ -38,6 +38,7 @@ var runJsdoc = function(src, output, templateObj) {
   gutil.log('*** Running jsDoc ***');
   gutil.log('Source:', src);
   gutil.log('Output:', output);
+  gutil.log('Template:', TEMPLATE_PATH);
 
   // Run jsdoc!
   return gulp.src(src)

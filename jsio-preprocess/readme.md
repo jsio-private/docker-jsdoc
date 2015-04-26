@@ -6,6 +6,8 @@ Custom logic to handle jsio projects containing `import xyz;` syntax.
 
 ### Development Usage
 
+Highly recommended: [sublime-jsdocs](https://github.com/spadgos/sublime-jsdocs/)
+
 Sometimes it is nice to see your docs before you push them to the live site.  There is a gulp task for this.  It will watch the specified folder, and build docs using the defualt template as changes are made.
 
 If only one `--watch` is specified, the output directory will be one level up (in this example, `/path/to/devkit-scene/jsdoc_output`).

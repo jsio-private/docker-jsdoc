@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+## REQUIREMENTS ##
 if [ -z "$GIT_REMOTE" ]; then
   echo "GIT_REMOTE is unset"
   exit 1
@@ -9,18 +10,21 @@ if [ -z "$GIT_REF" ]; then
   echo "GIT_REF is unset"
   exit 1
 fi
+## ##
 
+## OPTIONAL ##
 if [ -z "$CONFIG_FILE" ]; then
-  CONFIG_FILE=conf.json
+  CONFIG_FILE="conf.json"
 fi
 
 OPTIONAL_ARGS=""
-if [ -z "$TEMPLATE_DIR" ]; then
+if [ "$TEMPLATE_DIR" ]; then
   OPTIONAL_ARGS="-t $TEMPLATE_DIR"
 fi
+## ##
 
-INPUT_DIR=/remote-app
-OUTPUT_DIR=/doc-output
+INPUT_DIR="/remote-app"
+OUTPUT_DIR="/doc-output"
 
 # If the directory exists, make sure we reset it
 if [ -d "$INPUT_DIR" ] && [ -d "$INPUT_DIR/.git" ]; then
