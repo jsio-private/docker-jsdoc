@@ -10,8 +10,11 @@ RUN echo "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 RUN git clone https://github.com/davidshimjs/jaguarjs-jsdoc /jaguarjs-jsdoc
 
 # Install the preprocessor
-ADD jsio-preprocess /jsio-preprocess
+# Could just add all at once, but in dev it is nice to not run npm install every time
+#ADD jsio-preprocess /jsio-preprocess
+ADD jsio-preprocess/package.json /jsio-preprocess/package.json
 RUN cd /jsio-preprocess && npm install
+ADD jsio-preprocess/gulpfile.js /jsio-preprocess/gulpfile.js
 
 # Add our entrypoint
 ADD launch.sh /launch.sh

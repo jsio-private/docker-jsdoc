@@ -8,6 +8,7 @@ var argv = require('optimist').argv;
 var preprocessSource = function() {
   // you're going to receive Vinyl files as chunks
   function transform(file, cb) {
+    gutil.log('Preprocessing:', file.path);
     // read and modify file contents
     var fileContents = String(file.contents);
     fileContents = fileContents.replace(/(import .*?;)\n/g,

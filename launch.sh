@@ -24,7 +24,7 @@ if [ -d "$INPUT_DIR" ] && [ -d "$INPUT_DIR/.git" ]; then
   (
     cd $INPUT_DIR
     git reset --hard
-    git pull --all $GIT_REMOTE
+    git pull --all
   )
 else
   # Clone the repo
