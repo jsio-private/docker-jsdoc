@@ -7,4 +7,5 @@ docker run -it \
   -v $SSH_ID:/root/.ssh/id_rsa \
   -v $DIR/test_output:/doc-output \
   -e GIT_REMOTE=git@github.com:gameclosure/devkit-effects \
+  -e GIT_REF=master \
   jsdoc
