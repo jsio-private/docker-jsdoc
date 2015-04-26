@@ -7,3 +7,9 @@ Exmaple usage:
       -v /path/to/output:/doc-output
       -e GIT_REMOTE=git@github.com:my/repository
       jsdoc
+
+### Local Testing
+
+Run `./test-container.sh`
+
+Note: You must have an ssh key at `~/.ssh/id_rsa`
