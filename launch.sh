@@ -14,7 +14,10 @@ if [ -z "$CONFIG_FILE" ]; then
   CONFIG_FILE=conf.json
 fi
 
-TEMPLATE_DIR=/jaguarjs-jsdoc
+OPTIONAL_ARGS=""
+if [ -z "$TEMPLATE_DIR" ]; then
+  OPTIONAL_ARGS="-t $TEMPLATE_DIR"
+fi
 
 INPUT_DIR=/remote-app
 OUTPUT_DIR=/doc-output
@@ -44,8 +47,8 @@ fi
   # Run jsdoc
   ./node_modules/gulp/bin/gulp.js \
     -c $INPUT_DIR/$CONFIG_FILE \
-    -t $TEMPLATE_DIR \
-    -d $OUTPUT_DIR
+    -d $OUTPUT_DIR \
+    $OPTIONAL_ARGS
 )
 
 # Complete

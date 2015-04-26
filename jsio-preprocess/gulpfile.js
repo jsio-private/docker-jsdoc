@@ -1,9 +1,14 @@
+var path = require('path');
 var gulp = require('gulp');
+
 var jsdoc = require("gulp-jsdoc");
 var gutil = require('gulp-util');
-var path = require('path');
+var watch = require('gulp-watch')
 
 var argv = require('optimist').argv;
+
+var TEMPLATE_PATH = argv.t || 'node_modules/jaguarjs-jsdoc';
+var OUTPUT_PATH = argv.d || './jsdoc_output';
 
 var preprocessSource = function() {
   // you're going to receive Vinyl files as chunks
@@ -29,6 +34,19 @@ var preprocessSource = function() {
   return require('event-stream').map(transform);
 };
 
+var runJsdoc = function(src, output, templateObj) {
+  gutil.log('*** Running jsDoc ***');
+  gutil.log('Source:', src);
+  gutil.log('Output:', output);
+
+  // Run jsdoc!
+  return gulp.src(src)
+    .pipe(preprocessSource())
+    .pipe(jsdoc.parser())
+    .pipe(jsdoc.generator(output, templateObj));
+};
+
+// ~~ ~~ GULP TASKS ~~ ~~ //
 
 /**
   * argv: c config, t template, d output
@@ -45,33 +63,57 @@ gulp.task('jsdoc', [], function(cb) {
   }
 
   // Get the source array
-  var sourceArray = conf.source.include;
-  if (!Array.isArray(sourceArray)) {
-    sourceArray = [sourceArray];
+  var srcDirs = conf.source.include;
+  if (!Array.isArray(srcDirs)) {
+    srcDirs = [srcDirs];
   }
   // Make all the sources relative to the conf!
   var confDir = path.dirname(argv.c);
-  for (var i = 0; i < sourceArray.length; i++) {
-    sourceArray[i] = path.join(confDir, sourceArray[i], '**/*.js');
+  for (var i = 0; i < srcDirs.length; i++) {
+    srcDirs[i] = path.join(confDir, srcDirs[i], '**/*.js');
   }
-  gutil.log('Source:', sourceArray);
 
   // Template options
   if (!conf.templates) {
     throw new Error('conf.templates not defined');
-    process.exit(2);
+    process.exit(20);
   }
   var templateObj = conf.templates;
-  templateObj.path = argv.t || 'ink-docstrap';
+  templateObj.path = TEMPLATE_PATH;
 
-  var output = argv.d || './out';
+  return runJsdoc(srcDirs, OUTPUT_PATH, templateObj);
+});
 
-  // Run jsdoc!
-  gulp.src(sourceArray)
-    .pipe(preprocessSource())
-    .pipe(jsdoc.parser())
-    .pipe(jsdoc.generator(output, templateObj));
-  cb();
+gulp.task('jsdoc-watch', [], function() {
+  var srcDirs = argv.watch;
+
+  if (!srcDirs) {
+    throw new Error('Must specify command line argument at least once: --watch');
+    process.exit(40);
+  }
+
+  var outputPath = OUTPUT_PATH;
+  if (!Array.isArray(srcDirs)) {
+    outputPath = path.join(srcDirs, '..', 'jsdoc_output');
+    srcDirs = [srcDirs];
+  }
+
+  // Make sure we are only watching for js
+  for (var i = 0; i < srcDirs.length; i++) {
+    srcDirs[i] = path.join(srcDirs[i], '/**/*.js');
+  }
+
+  gutil.log('Running watch on:', srcDirs);
+
+  var template = {
+    path: TEMPLATE_PATH
+  };
+
+  var runFn = function () {
+    runJsdoc(srcDirs, outputPath, template);
+  };
+  watch(srcDirs, runFn);
+  runFn();
 });
 
 gulp.task('default', ['jsdoc'], function() {

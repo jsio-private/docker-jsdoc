@@ -6,9 +6,6 @@ RUN apt-get update && apt-get install -y ssh
 RUN mkdir /root/.ssh
 RUN echo "Host *\n\tStrictHostKeyChecking no\n" >> /root/.ssh/config
 
-# Clone the theme
-RUN git clone https://github.com/davidshimjs/jaguarjs-jsdoc /jaguarjs-jsdoc
-
 # Install the preprocessor
 # Could just add all at once, but in dev it is nice to not run npm install every time
 #ADD jsio-preprocess /jsio-preprocess
