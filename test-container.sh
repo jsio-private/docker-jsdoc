@@ -8,7 +8,8 @@ if [ "$1" == "dev" ]; then
   echo "RUNNING IN DEV MODE"
   echo
 
-  OPTIONAL_ARGS="-v $DIR/launch.sh:/launch.sh -v $DIR/jsio-preprocess/gulpfile.js:/jsio-preprocess/gulpfile.js"
+  OPTIONAL_ARGS="-v $DIR/launch.sh:/launch.sh \
+                 -v $DIR/jsio-preprocess/gulpfile.js:/jsio-preprocess/gulpfile.js"
 fi
 
 docker run -it \

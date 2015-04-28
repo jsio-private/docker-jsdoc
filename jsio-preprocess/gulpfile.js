@@ -1,3 +1,4 @@
+var fs = require('fs');
 var path = require('path');
 var gulp = require('gulp');
 
@@ -47,6 +48,41 @@ var runJsdoc = function(src, output, templateObj) {
     .pipe(jsdoc.generator(output, templateObj));
 };
 
+/** Verify that there is a readme in the srcArray, and try to find one if not.
+    Edits srcArray in place. */
+var verifyReadme = function(srcDirs, projectDir) {
+  gutil.log('Verifying Readme');
+  for (var i = 0; i < srcDirs.length; i++) {
+    var fname = srcDirs[i];
+    if (path.extname(fname) === '.md') {
+      gutil.log('> Already added:', fname);
+      return;
+    }
+  }
+
+  // None found, look for a readme
+  var files = fs.readdirSync(projectDir);
+  for (var i = 0; i < files.length; i++) {
+    var fname = files[i];
+    if (path.extname(fname) === '.md' && /readme/i.test(fname)) {
+      gutil.log('> Found:', fname);
+      srcDirs.push(fname);
+      return;
+    }
+  }
+
+  gutil.log('> No readme could be found');
+};
+
+/** Adds proper globs to end of array entries. Edits srcDirs in place. */
+var addJsGlob = function(srcDirs) {
+  for (var i = 0; i < srcDirs.length; i++) {
+    if (!path.extname(srcDirs[i])) {
+      srcDirs[i] = path.join(srcDirs[i], '/**/*.js');
+    }
+  }
+};
+
 // ~~ ~~ GULP TASKS ~~ ~~ //
 
 /**
@@ -68,11 +104,16 @@ gulp.task('jsdoc', [], function(cb) {
   if (!Array.isArray(srcDirs)) {
     srcDirs = [srcDirs];
   }
-  // Make all the sources relative to the conf!
+
+  // Verify that there is a readme
   var confDir = path.dirname(argv.c);
+  verifyReadme(srcDirs, confDir);
+
+  // Make all the sources relative to the conf!
   for (var i = 0; i < srcDirs.length; i++) {
-    srcDirs[i] = path.join(confDir, srcDirs[i], '**/*.js');
+    srcDirs[i] = path.join(confDir, srcDirs[i]);
   }
+  addJsGlob(srcDirs);
 
   // Template options
   if (!conf.templates) {
@@ -100,9 +141,7 @@ gulp.task('jsdoc-watch', [], function() {
   }
 
   // Make sure we are only watching for js
-  for (var i = 0; i < srcDirs.length; i++) {
-    srcDirs[i] = path.join(srcDirs[i], '/**/*.js');
-  }
+  addJsGlob(srcDirs);
 
   gutil.log('Running watch on:', srcDirs);
 

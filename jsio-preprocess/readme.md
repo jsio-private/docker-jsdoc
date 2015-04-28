@@ -29,7 +29,11 @@ Example usage:
 
 ### Container Usage
 
-This project was originally intended to be used inside of a docker container, with a single command line call.  So there are some useful command line arguments to help:
+This project was originally intended to be used inside of a docker container, with a single command line call.
+
+If there is not a markdown readme specified in the `conf.json` file, the gulp task will try to find a readme for the repository.
+
+Command line arguments to help:
 
     -c <path>
         The path to the conf.json object for this project
