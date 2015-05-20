@@ -53,6 +53,12 @@ fi
     -c $INPUT_DIR/$CONFIG_FILE \
     -d $OUTPUT_DIR \
     $OPTIONAL_ARGS
+
+  # Upload!
+  # TODO: at some point in time, the upload should happen from a secure location
+  # ./node_modules/gulp/bin/gulp.js \
+  #   -d $OUTPUT_DIR \
+  #   upload
 )
 
 # Complete

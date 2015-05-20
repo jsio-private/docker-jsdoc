@@ -6,10 +6,23 @@ var jsdoc = require("gulp-jsdoc");
 var gutil = require('gulp-util');
 var watch = require('gulp-watch')
 
-var argv = require('optimist').argv;
-
-var TEMPLATE_PATH = argv.t ? argv.t : path.join('node_modules', 'jaguarjs-jsdoc');
-var OUTPUT_PATH = argv.d ? argv.d : './jsdoc_output';
+var argv = require('yargs')
+  .option('t', {
+    default: path.join('node_modules', 'jaguarjs-jsdoc'),
+    describe: 'template path',
+    type: 'string'
+  })
+  .option('d', {
+    default: './jsdoc_output',
+    describe: 'output path',
+    type: 'string'
+  })
+  .option('aws', {
+    default: './aws.json',
+    describe: 'path to the aws credential file',
+    type: 'string'
+  })
+  .argv;
 
 var preprocessSource = function() {
   // you're going to receive Vinyl files as chunks
@@ -39,7 +52,7 @@ var runJsdoc = function(src, output, templateObj) {
   gutil.log('*** Running jsDoc ***');
   gutil.log('Source:', src);
   gutil.log('Output:', output);
-  gutil.log('Template:', TEMPLATE_PATH);
+  gutil.log('Template:', argv.t);
 
   // Run jsdoc!
   return gulp.src(src)
@@ -118,12 +131,11 @@ gulp.task('jsdoc', [], function(cb) {
   // Template options
   if (!conf.templates) {
     throw new Error('conf.templates not defined');
-    process.exit(20);
   }
   var templateObj = conf.templates;
-  templateObj.path = TEMPLATE_PATH;
+  templateObj.path = argv.t;
 
-  return runJsdoc(srcDirs, OUTPUT_PATH, templateObj);
+  return runJsdoc(srcDirs, argv.d, templateObj);
 });
 
 gulp.task('jsdoc-watch', [], function() {
@@ -131,10 +143,9 @@ gulp.task('jsdoc-watch', [], function() {
 
   if (!srcDirs) {
     throw new Error('Must specify command line argument at least once: --watch');
-    process.exit(40);
   }
 
-  var outputPath = OUTPUT_PATH;
+  var outputPath = argv.d;
   if (!Array.isArray(srcDirs)) {
     outputPath = path.join(srcDirs, '..', 'jsdoc_output');
     srcDirs = [srcDirs];
@@ -146,7 +157,7 @@ gulp.task('jsdoc-watch', [], function() {
   gutil.log('Running watch on:', srcDirs);
 
   var template = {
-    path: TEMPLATE_PATH
+    path: argv.t
   };
 
   var runFn = function () {
@@ -154,6 +165,29 @@ gulp.task('jsdoc-watch', [], function() {
   };
   watch(srcDirs, runFn);
   runFn();
+});
+
+gulp.task('upload', [], function() {
+  if (!fs.existsSync(argv.aws)) {
+    throw new Error('aws credentials file not found:' + argv.aws);
+  }
+
+  var s3 = require('gulp-s3');
+  // The aws.json file
+  var aws = JSON.parse(fs.readFileSync(argv.aws));
+  // Ex.
+  // {
+  //   "key": "AKIAI3Z7CUAFHG53DMJA",
+  //   "secret": "acYxWRu5RRa6CwzQuhdXEfTpbQA+1XQJ7Z1bGTCx",
+  //   "bucket": "dev.example.com",
+  //   "region": "eu-west-1"
+  // }
+
+  var options = {
+  };
+
+  return gulp.src(path.join(arv.d, '**'))
+    .pipe(s3(aws, options));
 });
 
 gulp.task('default', ['jsdoc'], function() {

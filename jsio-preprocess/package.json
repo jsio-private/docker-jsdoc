@@ -2,11 +2,13 @@
   "dependencies": {
     "event-stream": "^3.3.0",
     "gulp": "^3.8.11",
+    "gulp-aws-s3": "git://github.com/mattbenton/gulp-aws-s3.git",
     "gulp-jsdoc": "^0.1.4",
+    "gulp-s3-upload": "^1.0.4",
     "gulp-util": "^3.0.4",
     "gulp-watch": "^4.2.4",
     "jaguarjs-jsdoc": "git://github.com/gameclosure/jaguarjs-jsdoc.git",
-    "optimist": "^0.6.1",
-    "walk": "^2.3.9"
+    "walk": "^2.3.9",
+    "yargs": "^3.9.0"
   }
 }
