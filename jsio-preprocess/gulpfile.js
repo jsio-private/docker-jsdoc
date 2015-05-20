@@ -8,7 +8,7 @@ var watch = require('gulp-watch')
 
 var argv = require('yargs')
   .option('t', {
-    default: path.join('node_modules', 'jaguarjs-jsdoc'),
+    default: path.join('node_modules', 'gc-jaguarjs-jsdoc'),
     describe: 'template path',
     type: 'string'
   })

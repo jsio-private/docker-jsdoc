@@ -7,7 +7,7 @@
     "gulp-s3-upload": "^1.0.4",
     "gulp-util": "^3.0.4",
     "gulp-watch": "^4.2.4",
-    "jaguarjs-jsdoc": "git://github.com/gameclosure/jaguarjs-jsdoc.git",
+    "gc-jaguarjs-jsdoc": "git://github.com/gameclosure/jaguarjs-jsdoc.git",
     "walk": "^2.3.9",
     "yargs": "^3.9.0"
   }
