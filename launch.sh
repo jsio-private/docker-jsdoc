@@ -29,23 +29,27 @@ OUTPUT_DIR="/doc-output"
 # If the directory exists, make sure we reset it
 if [ -d "$INPUT_DIR" ] && [ -d "$INPUT_DIR/.git" ]; then
   (
+    echo "*** git reset and fetch"
     cd $INPUT_DIR
     git reset --hard
-    git pull --all
+    git fetch
   )
 else
   # Clone the repo
+  echo "*** git clone"
   git clone $GIT_REMOTE $INPUT_DIR
 fi
 
 # Checkout the proper ref
 (
+  echo "*** git checkout"
   cd $INPUT_DIR
   git checkout $GIT_REF
 )
 
 # Time to run the docs
 (
+  echo "*** running docs"
   cd /jsio-preprocess
 
   # Run jsdoc
