@@ -30,7 +30,7 @@ var preprocessSource = function() {
     gutil.log('Preprocessing:', file.path);
     // read and modify file contents
     var fileContents = String(file.contents);
-    fileContents = fileContents.replace(/(import .*?;)\n/g,
+    fileContents = fileContents.replace(/^\s*(import .*?)(?:;|$)/gm,
       function(str, group1) {
         return 'jsio("' + group1 + '");';
       });
