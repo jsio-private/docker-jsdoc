@@ -36,15 +36,16 @@ if [ -d "$INPUT_DIR" ] && [ -d "$INPUT_DIR/.git" ]; then
   )
 else
   # Clone the repo
-  echo "*** git clone"
+  echo "*** git clone $GIT_REMOTE"
   git clone $GIT_REMOTE $INPUT_DIR
 fi
 
 # Checkout the proper ref
 (
-  echo "*** git checkout"
+  echo "*** git checkout $GIT_REF and pull"
   cd $INPUT_DIR
   git checkout $GIT_REF
+  git pull
 )
 
 # Time to run the docs
