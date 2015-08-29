@@ -99,17 +99,41 @@ var addJsGlob = function(srcDirs) {
 // ~~ ~~ GULP TASKS ~~ ~~ //
 
 /**
-  * argv: c config, t template, d output
-  */
+ * argv: s cwd, c config, t template, d output
+ */
 gulp.task('jsdoc', [], function(cb) {
   // Check to make sure we have the required source.include
-  if (!argv.c) {
-    throw new Error('must specify command line option: -c');
+  var conf;
+  var confDir;
+  var cwd = argv.s || __dirname;
+
+  if (argv.c) {
+    console.log('Using conf file at: ' + argv.c);
+    conf = require(argv.c);
+    if (!conf.source || !conf.source.include) {
+      throw new Error('conf.source.include not defined');
+    }
+    confDir = path.dirname(argv.c);
+  } else {
+    // If there is a src folder just guess that
+    var srcFolder = path.join(cwd, 'src');
+    console.log('No conf specified, looking for src folder at: ' + srcFolder);
+    if (fs.existsSync(srcFolder)) {
+      conf = {
+        source: {
+          include: [ 'src' ]
+        },
+        templates: {
+          applicationName: path.basename(path.dirname(srcFolder)),
+          linenums: true
+        }
+      };
+      confDir = path.dirname(srcFolder);
+    }
   }
 
-  var conf = require(argv.c);
-  if (!conf.source || !conf.source.include) {
-    throw new Error('conf.source.include not defined');
+  if (!conf) {
+    throw new Error('No conf - must specify command line option "-c" or run with "-s" in a project with a src folder');
   }
 
   // Get the source array
@@ -119,7 +143,6 @@ gulp.task('jsdoc', [], function(cb) {
   }
 
   // Verify that there is a readme
-  var confDir = path.dirname(argv.c);
   verifyReadme(srcDirs, confDir);
 
   // Make all the sources relative to the conf!

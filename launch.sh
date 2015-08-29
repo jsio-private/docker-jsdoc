@@ -53,9 +53,15 @@ fi
   echo "*** running docs"
   cd /jsio-preprocess
 
+  # Check for presence of conf file
+  CONF="$INPUT_DIR/$CONFIG_FILE"
+  if [ -f "$CONF" ]; then
+    OPTIONAL_ARGS="$OPTIONAL_ARGS -c $CONF"
+  fi
+
   # Run jsdoc
   ./node_modules/gulp/bin/gulp.js \
-    -c $INPUT_DIR/$CONFIG_FILE \
+    -s $INPUT_DIR \
     -d $OUTPUT_DIR \
     $OPTIONAL_ARGS
 
