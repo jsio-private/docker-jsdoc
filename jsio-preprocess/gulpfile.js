@@ -99,7 +99,7 @@ var addJsGlob = function(srcDirs) {
 // ~~ ~~ GULP TASKS ~~ ~~ //
 
 /**
- * argv: s cwd, c config, t template, d output
+ * argv: s cwd, c config, t template, d output, n application name
  */
 gulp.task('jsdoc', [], function(cb) {
   // Check to make sure we have the required source.include
@@ -119,12 +119,20 @@ gulp.task('jsdoc', [], function(cb) {
     var srcFolder = path.join(cwd, 'src');
     console.log('No conf specified, looking for src folder at: ' + srcFolder);
     if (fs.existsSync(srcFolder)) {
+      // Guess an app name as well.  If not argv, just the directory
+      var appName;
+      if (argv.n && typeof argv.n === 'string') {
+        appName = argv.n;
+      } else {
+        appName = path.basename(path.dirname(srcFolder));
+      }
+
       conf = {
         source: {
           include: [ 'src' ]
         },
         templates: {
-          applicationName: path.basename(path.dirname(srcFolder)),
+          applicationName: appName,
           linenums: true
         }
       };

@@ -59,10 +59,14 @@ fi
     OPTIONAL_ARGS="$OPTIONAL_ARGS -c $CONF"
   fi
 
+  # Try to grab a remote name to use as the fallback app name - lol awk
+  REMOTE_NAME=`git remote -v | awk '{print $2}' | awk -F "/" '{print $(NF)}'`
+
   # Run jsdoc
   ./node_modules/gulp/bin/gulp.js \
     -s $INPUT_DIR \
     -d $OUTPUT_DIR \
+    -n $REMOTE_NAME \
     $OPTIONAL_ARGS
 
   # Upload!
