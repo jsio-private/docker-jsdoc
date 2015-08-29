@@ -60,13 +60,27 @@ fi
   fi
 
   # Try to grab a remote name to use as the fallback app name - lol awk
-  REMOTE_NAME=`git remote -v | awk '{print $2}' | awk -F "/" '{print $(NF)}'`
+  REMOTE_NAME=`cd $INPUT_DIR && git remote -v | awk '{print $2}' | awk -F "/" 'NR==1{print $(NF)}'`
+  if [ ! -z "$REMOTE_NAME" ]; then
+    OPTIONAL_ARGS="$OPTIONAL_ARGS -n $REMOTE_NAME"
+  fi
+
+  # Check for a package.json and try to run npm install
+  PACKAGE_JSON="$INPUT_DIR/package.json"
+  if [ -f "$PACKAGE_JSON" ]; then
+    (
+      # no errors, in case package.json is bogus
+      set +e
+      cd $INPUT_DIR
+      npm install
+      set -e
+    )
+  fi
 
   # Run jsdoc
   ./node_modules/gulp/bin/gulp.js \
     -s $INPUT_DIR \
     -d $OUTPUT_DIR \
-    -n $REMOTE_NAME \
     $OPTIONAL_ARGS
 
   # Upload!
